@@ -1,4 +1,6 @@
 using dotnet_core_identity_basics.Areas.Identity.Data;
+using dotnet_core_identity_basics.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -35,6 +37,16 @@ namespace dotnet_core_identity_basics
                 .AddRoles<IdentityRole>()
                 .AddDefaultUI()
                 .AddEntityFrameworkStores<AspNetCoreIdentityContext>();
+
+            services.AddAuthorization(options => 
+            {
+                options.AddPolicy("CanDelete", policy => policy.RequireClaim("CanDelete"));
+
+                options.AddPolicy("CanRead", policy => policy.Requirements.Add(new NecessaryPermissions("CanRead")));
+                options.AddPolicy("CanWrite", policy => policy.Requirements.Add(new NecessaryPermissions("CanWrite")));
+            });
+
+            services.AddSingleton<IAuthorizationHandler, NecessaryPermissionHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

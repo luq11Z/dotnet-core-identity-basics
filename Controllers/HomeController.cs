@@ -31,11 +31,23 @@ namespace dotnet_core_identity_basics.Controllers
             return View();
         }
 
-        //[Authorize] -> JUST TO MAKE SURE USER IS AUTHENTICATED
-        [Authorize(Roles = "Admin, Manager")]
+        //[Authorize] ->TO MAKE SURE USER IS AUTHENTICATED
+        [Authorize(Roles = "Admin, Manager")] //Roles based
         public IActionResult Secret()
         {
             return View();
+        }
+
+        [Authorize(Policy = "CanDelete")] //Claims
+        public IActionResult SecretClaim()
+        {
+            return View("Secret");
+        }
+
+        [Authorize(Policy = "CanWrite")]
+        public IActionResult SecretClaimWrite()
+        {
+            return View("Secret");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
