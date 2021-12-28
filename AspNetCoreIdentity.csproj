@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>dotnet_core_identity_basics</RootNamespace>
+    <UserSecretsId>ab37e9c4-25aa-455b-ac1a-986bfc05e12f</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
