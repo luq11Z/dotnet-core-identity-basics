@@ -1,4 +1,5 @@
 ﻿using dotnet_core_identity_basics.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace dotnet_core_identity_basics.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -18,12 +20,20 @@ namespace dotnet_core_identity_basics.Controllers
             _logger = logger;
         }
 
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        //[Authorize] -> JUST TO MAKE SURE USER IS AUTHENTICATED
+        [Authorize(Roles = "Admin, Manager")]
+        public IActionResult Secret()
         {
             return View();
         }
