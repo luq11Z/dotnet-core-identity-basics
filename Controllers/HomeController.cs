@@ -1,4 +1,5 @@
-﻿using dotnet_core_identity_basics.Models;
+﻿using dotnet_core_identity_basics.Extensions;
+using dotnet_core_identity_basics.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -46,6 +47,12 @@ namespace dotnet_core_identity_basics.Controllers
 
         [Authorize(Policy = "CanWrite")]
         public IActionResult SecretClaimWrite()
+        {
+            return View("Secret");
+        }
+
+        [ClaimsAuthorize("Products", "Read")]
+        public IActionResult ClaimsCustom()
         {
             return View("Secret");
         }
