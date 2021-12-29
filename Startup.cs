@@ -47,7 +47,8 @@ namespace dotnet_core_identity_basics
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error/500");
+                app.UseStatusCodePagesWithRedirects("/Error/{0}");
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
