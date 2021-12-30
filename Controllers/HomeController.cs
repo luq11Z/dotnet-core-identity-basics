@@ -2,21 +2,17 @@
 using dotnet_core_identity_basics.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+using KissLog;
 
 namespace dotnet_core_identity_basics.Controllers
 {
     [Authorize]
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IKLogger _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IKLogger logger)
         {
             _logger = logger;
         }
@@ -24,6 +20,8 @@ namespace dotnet_core_identity_basics.Controllers
         [AllowAnonymous]
         public IActionResult Index()
         {
+            _logger.Trace("User accessed Home!");
+
             return View();
         }
 
@@ -37,6 +35,16 @@ namespace dotnet_core_identity_basics.Controllers
         [Authorize(Roles = "Admin, Manager")] //Roles based
         public IActionResult Secret()
         {
+            try
+            {
+                throw new Exception("Something went terible wrong!");
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+                throw;
+            }
+
             return View();
         }
 

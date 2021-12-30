@@ -1,10 +1,11 @@
-﻿using dotnet_core_identity_basics.Areas.Identity.Data;
-using dotnet_core_identity_basics.Extensions;
+﻿using dotnet_core_identity_basics.Extensions;
+using KissLog;
+using KissLog.AspNetCore;
+using KissLog.Formatters;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace dotnet_core_identity_basics.Config
 {
@@ -14,18 +15,25 @@ namespace dotnet_core_identity_basics.Config
         {
             services.AddSingleton<IAuthorizationHandler, NecessaryPermissionHandler>();
 
-            return services;
-        }
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-        public static IServiceCollection AddIdentityConfig(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddDbContext<AspNetCoreIdentityContext>(options =>
-                  options.UseSqlServer(configuration.GetConnectionString("AspNetCoreIdentityContextConnection")));
+            services.AddScoped<IKLogger>((provider) => Logger.Factory.Get());
 
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-                .AddRoles<IdentityRole>()
-                .AddDefaultUI()
-                .AddEntityFrameworkStores<AspNetCoreIdentityContext>();
+            services.AddLogging(logging =>
+            {
+                logging.AddKissLog(options =>
+                {
+                    options.Formatter = (FormatterArgs args) =>
+                    {
+                        if (args.Exception == null)
+                            return args.DefaultValue;
+
+                        string exceptionStr = new ExceptionFormatter().Format(args.Exception, args.Logger);
+
+                        return string.Join(Environment.NewLine, new[] { args.DefaultValue, exceptionStr });
+                    };
+                });
+            });
 
             return services;
         }
