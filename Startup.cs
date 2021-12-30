@@ -1,4 +1,5 @@
 using dotnet_core_identity_basics.Config;
+using dotnet_core_identity_basics.Extensions;
 using KissLog.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +35,11 @@ namespace dotnet_core_identity_basics
             services.AddIdentityConfig(Configuration);
             services.AddAuthorizationConfig();
             services.ResolveDependencies();
+
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(typeof(AuditFilter));
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -35,6 +35,8 @@ namespace dotnet_core_identity_basics.Config
                 });
             });
 
+            services.AddScoped<AuditFilter>();
+
             return services;
         }
     }
